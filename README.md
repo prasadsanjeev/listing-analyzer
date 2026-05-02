@@ -77,6 +77,8 @@ This is the most important step — the key lives securely in Azure, never in th
    - **Value**: paste your `AIza...` key here
 5. Click **OK** → **Save**
 
+6. Now this is in environment variables 
+
 The Azure Function will now read this key server-side when it proxies requests to Gemini.
 
 ---
