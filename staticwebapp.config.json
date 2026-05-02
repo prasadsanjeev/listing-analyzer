@@ -2,6 +2,7 @@
   "routes": [
     {
       "route": "/api/*",
+      "methods": ["GET", "POST", "OPTIONS"],
       "allowedRoles": ["anonymous"]
     }
   ],
