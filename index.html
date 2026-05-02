@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listing Analyzer — Durham Region</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F4EE;
+      --ink: #1A1814;
+      --ink-soft: #4A4640;
+      --ink-muted: #8A8580;
+      --border: #E0DBD2;
+      --border-strong: #C8C2B8;
+      --accent: #2B5F4A;
+      --accent-light: #EBF3EF;
+      --accent-mid: #5A9E80;
+      --amber: #C47A1A;
+      --amber-light: #FDF3E3;
+      --red: #B83232;
+      --red-light: #FDEAEA;
+      --blue: #1E4F8C;
+      --blue-light: #EBF2FB;
+      --card-bg: #FFFFFF;
+      --shadow: 0 1px 4px rgba(26,24,20,0.07), 0 4px 16px rgba(26,24,20,0.05);
+    }
+
+    html { font-size: 16px; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 2rem 2rem 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 240px; height: 240px;
+      border: 1px solid rgba(247,244,238,0.08);
+      border-radius: 50%;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      right: -20px; top: -20px;
+      width: 140px; height: 140px;
+      border: 1px solid rgba(247,244,238,0.06);
+      border-radius: 50%;
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-mid);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.15;
+      font-weight: 400;
+      color: var(--cream);
+      max-width: 520px;
+    }
+    header h1 em { font-style: italic; color: var(--accent-mid); }
+    header p {
+      font-size: 13px;
+      color: rgba(247,244,238,0.55);
+      margin-top: 10px;
+      max-width: 420px;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* ── Input card ── */
+    .input-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .input-label {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .address-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .address-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .address-row input:focus { border-color: var(--accent); }
+    .address-row input::placeholder { color: var(--ink-muted); }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: var(--ink);
+      color: var(--cream);
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-full {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      background: var(--accent);
+      color: #fff;
+      margin-top: 10px;
+    }
+    .btn-full:hover { opacity: 0.88; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0.75rem 0;
+      color: var(--ink-muted);
+      font-size: 11px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      background: var(--cream);
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+      transition: border-color 0.15s;
+      line-height: 1.5;
+    }
+    textarea:focus { border-color: var(--accent); }
+    textarea::placeholder { color: var(--ink-muted); }
+
+    /* ── Status / Error ── */
+    .status-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--accent-light);
+      border: 1px solid #C5DDD3;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .spinner {
+      width: 15px; height: 15px;
+      border: 2px solid #C5DDD3;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-bar {
+      display: none;
+      padding: 12px 16px;
+      background: var(--red-light);
+      border: 1px solid #F0BBBB;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--red);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Result cards ── */
+    .results { display: none; flex-direction: column; gap: 14px; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+      animation: fadeUp 0.3s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card:nth-child(2) { animation-delay: 0.05s; }
+    .card:nth-child(3) { animation-delay: 0.10s; }
+    .card:nth-child(4) { animation-delay: 0.15s; }
+    .card:nth-child(5) { animation-delay: 0.20s; }
+
+    .card-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .card-body { font-size: 13px; color: var(--ink-soft); line-height: 1.7; }
+
+    /* compass card */
+    .compass-row { display: flex; align-items: center; gap: 1.25rem; }
+    .compass-svg { flex-shrink: 0; }
+
+    /* destinations */
+    .dest-list { display: flex; flex-direction: column; }
+    .dest-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .dest-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .dest-item:first-child { padding-top: 0; }
+    .dest-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .dest-info { flex: 1; }
+    .dest-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+    .dest-type { font-size: 11px; color: var(--ink-muted); margin-top: 1px; }
+    .dest-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+    .badge-green { background: var(--accent-light); color: var(--accent); }
+    .badge-amber { background: var(--amber-light); color: var(--amber); }
+    .badge-red { background: var(--red-light); color: var(--red); }
+    .dest-dist { text-align: right; flex-shrink: 0; }
+    .dest-km { font-size: 16px; font-weight: 500; color: var(--ink); }
+    .dest-time { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+
+    /* key points */
+    .points-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .point-item { display: flex; gap: 10px; align-items: flex-start; }
+    .point-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+    .point-text { font-size: 13px; color: var(--ink-soft); line-height: 1.65; }
+
+    /* tips */
+    .tips-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .tip-item { font-size: 13px; color: var(--ink-soft); line-height: 1.65; padding-left: 14px; position: relative; }
+    .tip-item::before { content: '→'; position: absolute; left: 0; color: var(--accent-mid); }
+
+    /* copy button */
+    .copy-row { display: flex; justify-content: flex-end; margin-top: 12px; }
+    .btn-copy {
+      padding: 7px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-copy:hover { background: var(--cream); }
+
+    /* api key notice */
+    .api-notice {
+      font-size: 12px;
+      color: var(--ink-muted);
+      background: var(--amber-light);
+      border: 1px solid #EDD9A3;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .api-notice strong { color: var(--amber); }
+    .api-key-row { display: flex; gap: 8px; margin-top: 8px; }
+    .api-key-row input {
+      flex: 1;
+      padding: 7px 12px;
+      border: 1px solid #EDD9A3;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+    .api-key-row input:focus { border-color: var(--amber); }
+    .btn-save-key {
+      padding: 7px 14px;
+      background: var(--amber);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-muted);
+      padding: 2rem 1rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 520px) {
+      header { padding: 1.5rem 1.25rem; }
+      .address-row { flex-direction: column; }
+      .compass-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Durham Region · Ontario</div>
+  <h1>House Listing <em>Analyzer</em></h1>
+  <p>Enter any address to get door orientation, sunlight patterns, and distances to key nearby destinations.</p>
+</header>
+
+<main>
+
+  <!-- Info banner -->
+  <div class="api-notice" style="background:#EBF3EF;border-color:#A8D5C0;">
+    <strong style="color:#2B5F4A;">Ready to analyze.</strong> Enter a Durham Region property address below. Your Gemini API key is securely stored in Azure — it never touches the browser.
+  </div>
+
+  <!-- Input card -->
+  <div class="input-card" style="margin-top:1.25rem;">
+    <label class="input-label">Property address</label>
+    <div class="address-row">
+      <input type="text" id="addressInput" placeholder="e.g. 45 Taunton Rd W, Whitby, ON" />
+      <button class="btn btn-primary" id="analyzeAddr">Analyze</button>
+    </div>
+
+    <div class="divider">or paste full listing</div>
+
+    <label class="input-label">Listing description (optional)</label>
+    <textarea id="listingInput" placeholder="Paste MLS or listing description here for richer analysis..."></textarea>
+    <button class="btn btn-full" id="analyzeListing">Analyze listing →</button>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar" id="statusBar">
+    <div class="spinner"></div>
+    <span id="statusText">Analyzing with Claude...</span>
+  </div>
+
+  <!-- Error -->
+  <div class="error-bar" id="errorBar"></div>
+
+  <!-- Results -->
+  <div class="results" id="results"></div>
+
+</main>
+
+<footer>
+  Built for Durham Region real estate · Powered by Google Gemini AI
+</footer>
+
+<script>
+  // ── Proxy endpoint (Azure Function) ──
+  // The API key is stored securely as an Azure Function App Setting (env var).
+  // This page never touches the key — it just posts the prompt to /api/gemini-proxy.
+  const PROXY_URL = '/api/gemini-proxy';
+
+  // ── UI helpers ──
+  const statusBar  = document.getElementById('statusBar');
+  const statusText = document.getElementById('statusText');
+  const errorBar   = document.getElementById('errorBar');
+  const resultsEl  = document.getElementById('results');
+
+  function showStatus(msg) {
+    statusBar.style.display = 'flex';
+    statusText.textContent = msg;
+    errorBar.style.display = 'none';
+    resultsEl.style.display = 'none';
+  }
+  function hideStatus() { statusBar.style.display = 'none'; }
+  function showError(msg) {
+    hideStatus();
+    errorBar.style.display = 'block';
+    errorBar.textContent = msg;
+  }
+
+  // ── Compass SVG ──
+  function dirToAngle(d) {
+    return { N:0,NE:45,E:90,SE:135,S:180,SW:225,W:270,NW:315 }[(d||'').toUpperCase()] ?? 0;
+  }
+  function compassSVG(dir) {
+    const a = dirToAngle(dir);
+    return `<svg class="compass-svg" width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="37" fill="none" stroke="#E0DBD2" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="32" fill="#F7F4EE"/>
+      <text x="40" y="11" text-anchor="middle" font-size="9" fill="#8A8580" font-family="DM Sans,sans-serif" font-weight="500">N</text>
+      <text x="40" y="74" text-anchor="middle" font-size="9" fill="#8A8580" font-family="DM Sans,sans-serif" font-weight="500">S</text>
+      <text x="74" y="44" text-anchor="middle" font-size="9" fill="#8A8580" font-family="DM Sans,sans-serif" font-weight="500">E</text>
+      <text x="6"  y="44" text-anchor="middle" font-size="9" fill="#8A8580" font-family="DM Sans,sans-serif" font-weight="500">W</text>
+      <g transform="rotate(${a},40,40)">
+        <polygon points="40,16 36,40 40,36 44,40" fill="#B83232"/>
+        <polygon points="40,64 36,40 40,44 44,40" fill="#C8C2B8"/>
+      </g>
+      <circle cx="40" cy="40" r="4" fill="#1A1814"/>
+    </svg>`;
+  }
+
+  // ── Destinations config ──
+  const DESTS = [
+    { key:'donald_wilson', name:'Donald A. Wilson Secondary', type:'High school · Whitby', emoji:'🎓', bg:'#EBF3EF', iconColor:'#2B5F4A' },
+    { key:'grandview_kids', name:'Grandview Kids Ajax', type:'Children\'s rehab centre · Ajax', emoji:'🏥', bg:'#EBF2FB', iconColor:'#1E4F8C' },
+    { key:'whitby_go', name:'Whitby GO Station', type:'GO Transit rail · Whitby', emoji:'🚆', bg:'#FDF3E3', iconColor:'#C47A1A' },
+    { key:'ajax_go', name:'Ajax GO Station', type:'GO Transit rail · Ajax', emoji:'🚆', bg:'#FDF3E3', iconColor:'#C47A1A' },
+  ];
+
+  function badge(km) {
+    if (typeof km !== 'number') return '';
+    if (km <= 3) return `<span class="dest-badge badge-green">Walking / cycling</span>`;
+    if (km <= 8) return `<span class="dest-badge badge-amber">Short drive</span>`;
+    return `<span class="dest-badge badge-red">Longer drive</span>`;
+  }
+
+  function renderDests(dist) {
+    return DESTS.map(d => {
+      const info = (dist || {})[d.key] || {};
+      const km = info.distance_km;
+      const drv = info.drive_mins != null ? `${info.drive_mins} min drive` : '';
+      const trn = info.transit_mins != null ? ` · ${info.transit_mins} min transit` : '';
+      return `<div class="dest-item">
+        <div class="dest-icon" style="background:${d.bg};">${d.emoji}</div>
+        <div class="dest-info">
+          <div class="dest-name">${d.name}</div>
+          <div class="dest-type">${d.type}</div>
+          ${badge(km)}
+        </div>
+        <div class="dest-dist">
+          <div class="dest-km">${typeof km === 'number' ? km.toFixed(1) + ' km' : '—'}</div>
+          <div class="dest-time">${drv}${trn}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Render all results ──
+  function renderResults(data) {
+    hideStatus();
+    errorBar.style.display = 'none';
+    resultsEl.style.display = 'flex';
+
+    const dir = data.front_door_direction || 'N';
+    const dist = data.distances || {};
+    const kp = data.key_points || [];
+    const bt = data.buyer_tips || [];
+
+    // Build copy text
+    const copyText = [
+      `Front door faces: ${dir}`,
+      data.direction_explanation,
+      '',
+      `Sunlight: ${data.sunlight_summary}`,
+      data.sunlight_detail,
+      '',
+      'Nearby destinations:',
+      ...DESTS.map(d => {
+        const info = dist[d.key] || {};
+        return `  ${d.name}: ${info.distance_km != null ? info.distance_km.toFixed(1) + ' km' : '—'} (${info.drive_mins != null ? info.drive_mins + ' min drive' : ''})`;
+      }),
+      '',
+      'Key listing points:',
+      ...kp.map(p => `  • ${p}`),
+    ].join('\n');
+
+    resultsEl.innerHTML = `
+      <div class="card">
+        <div class="card-eyebrow">Front door direction</div>
+        <div class="compass-row">
+          ${compassSVG(dir)}
+          <div>
+            <div class="card-title">Faces ${dir}</div>
+            <div class="card-body">${data.direction_explanation || ''}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-eyebrow">Sunlight & natural light</div>
+        <div class="card-title">${data.sunlight_summary || '—'}</div>
+        <div class="card-body" style="margin-top:6px;">${data.sunlight_detail || ''}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-eyebrow">Nearby destinations</div>
+        <div class="dest-list">${renderDests(dist)}</div>
+      </div>
+
+      ${kp.length ? `<div class="card">
+        <div class="card-eyebrow">Key listing points</div>
+        <div class="points-list">
+          ${kp.map(p => `<div class="point-item"><div class="point-dot"></div><div class="point-text">${p}</div></div>`).join('')}
+        </div>
+        <div class="copy-row">
+          <button class="btn-copy" id="copyBtn">Copy all points</button>
+        </div>
+      </div>` : ''}
+
+      ${bt.length ? `<div class="card">
+        <div class="card-eyebrow">Tips for buyers & agents</div>
+        <div class="tips-list">
+          ${bt.map(t => `<div class="tip-item">${t}</div>`).join('')}
+        </div>
+      </div>` : ''}
+    `;
+
+    const copyBtn = document.getElementById('copyBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(copyText).then(() => {
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => { copyBtn.textContent = 'Copy all points'; }, 2000);
+        });
+      });
+    }
+  }
+
+  // ── Gemini API call via Azure Function proxy ──
+  async function analyze(userContent) {
+    showStatus('Analyzing with Gemini...');
+
+    const prompt = `You are a real estate orientation and location expert specializing in the Durham Region of Ontario, Canada (Whitby, Ajax, Oshawa, Pickering area).
+
+Given a property address and/or listing description, return ONLY a valid JSON object (no markdown, no backticks, no explanation) with these exact keys:
+
+- front_door_direction: compass direction the front door faces when walking OUT (N, NE, E, SE, S, SW, W, NW)
+- direction_explanation: one concise sentence explaining how you determined the door direction
+- sunlight_summary: short headline about sunlight (e.g. "Morning sun floods the main living area")
+- sunlight_detail: 2-3 sentences about natural light patterns through the day based on orientation
+- distances: object with these exact keys, each containing distance_km (number, one decimal place), drive_mins (integer), transit_mins (integer or null):
+    donald_wilson  → Donald A. Wilson Secondary School, Whitby ON
+    grandview_kids → Grandview Kids, 600 Monarch Ave, Ajax ON L1S 4S2
+    whitby_go      → Whitby GO Station, 1600 Henry St, Whitby ON
+    ajax_go        → Ajax GO Station, 75 Westney Rd S, Ajax ON
+- key_points: array of 5-6 compelling listing bullet points mentioning orientation, light, and proximity to landmarks
+- buyer_tips: array of 2-3 practical tips for buyers or agents
+
+Use accurate geographic knowledge of the Durham Region street grid for distance estimates. Be specific and realistic.
+
+Property to analyze:
+${userContent}`;
+
+    try {
+      const resp = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error || `Proxy error ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      const raw = data.text || '';
+      const clean = raw.replace(/```json|```/g, '').trim();
+      renderResults(JSON.parse(clean));
+    } catch(e) {
+      showError('Analysis failed: ' + (e.message || 'Unknown error. Is the Azure Function deployed?'));
+      console.error(e);
+    }
+  }
+
+  // ── Event listeners ──
+  document.getElementById('analyzeAddr').addEventListener('click', () => {
+    const addr = document.getElementById('addressInput').value.trim();
+    if (!addr) return showError('Please enter a property address.');
+    analyze(`Property address: ${addr}`);
+  });
+
+  document.getElementById('analyzeListing').addEventListener('click', () => {
+    const addr = document.getElementById('addressInput').value.trim();
+    const listing = document.getElementById('listingInput').value.trim();
+    if (!listing && !addr) return showError('Please enter an address or paste a listing.');
+    const content = [addr && `Address: ${addr}`, listing && `Listing:\n${listing}`].filter(Boolean).join('\n\n');
+    analyze(content);
+  });
+
+  document.getElementById('addressInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('analyzeAddr').click();
+  });
+</script>
+</body>
+</html>

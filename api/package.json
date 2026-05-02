@@ -1,0 +1,9 @@
+{
+  "name": "listing-analyzer-api",
+  "version": "1.0.0",
+  "description": "Gemini proxy for Listing Analyzer",
+  "main": "index.js",
+  "engines": {
+    "node": ">=18"
+  }
+}
