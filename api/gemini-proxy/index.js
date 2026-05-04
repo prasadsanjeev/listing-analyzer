@@ -21,7 +21,8 @@ module.exports = async function (context, req) {
   }
 
   // Read Gemini API key from Azure Function Application Settings (env var)
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+//  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  const apiKey = process.env["GEMINI_API_KEY"];
   if (!GEMINI_API_KEY) {
     context.res = {
       status: 500,
