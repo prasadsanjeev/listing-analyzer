@@ -21,9 +21,8 @@ module.exports = async function (context, req) {
   }
 
   // Read Gemini API key from Azure Function Application Settings (env var)
-//  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   const apiKey = process.env["GEMINI_API_KEY"];
-  if (!GEMINI_API_KEY) {
+  if (!apiKey) {
     context.res = {
       status: 500,
       headers: corsHeaders,
@@ -45,7 +44,7 @@ module.exports = async function (context, req) {
   });
 
   // Call Gemini API server-side (no CORS restriction here)
-  const geminiPath = `/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const geminiPath = `/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   try {
     const geminiResponse = await new Promise((resolve, reject) => {
